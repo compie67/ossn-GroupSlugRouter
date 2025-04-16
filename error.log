@@ -1,0 +1,15 @@
+[16-Apr-2025 13:19:12 CET] [SLUG] ✅ helpers/slug.php is geladen
+[16-Apr-2025 13:19:16 CET] [SLUG] ✅ helpers/slug.php is geladen
+[16-Apr-2025 13:19:16 CET] [SLUG] ✳️ Slug genereren voor groep: 3624 - gptgo6
+[16-Apr-2025 13:19:16 CET] [SLUG] ✳️ Slug genereren voor groep: 3624 - gptgo6
+[16-Apr-2025 13:19:16 CET] [SLUG] ❌ Geen groep gevonden voor slug 'gptgo6'
+[16-Apr-2025 13:19:16 CET] [SLUG] 💾 Slug opslaan als metadata: {"entity_guid":3624,"name":"username","value":"gptgo6"}
+[16-Apr-2025 13:19:16 CET] [#1744802356|VOIGOELNS0O4QHVNPMUP79GL2K] Error: Call to undefined function ossn_add_metadata() in /www/wwwroot/shadow.nlsociaal.nl/components/GroupSlugRouter/helpers/slug.php:74
+Stack trace:
+#0 /www/wwwroot/shadow.nlsociaal.nl/components/GroupSlugRouter/ossn_com.php(45): groupslugrouter_generate_slug()
+#1 /www/wwwroot/shadow.nlsociaal.nl/libraries/ossn.lib.system.php(258): groupslugrouter_on_group_added()
+#2 /www/wwwroot/shadow.nlsociaal.nl/components/OssnGroups/classes/OssnGroup.php(48): ossn_trigger_callback()
+#3 /www/wwwroot/shadow.nlsociaal.nl/components/OssnGroups/actions/group/add.php(16): OssnGroup->createGroup()
+#4 /www/wwwroot/shadow.nlsociaal.nl/libraries/ossn.lib.actions.php(51): include_once('...')
+#5 /www/wwwroot/shadow.nlsociaal.nl/system/handlers/actions.php(13): ossn_action()
+#6 {main}
