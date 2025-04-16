@@ -5,7 +5,7 @@
 
 ---
 
-## ❓ What it does
+## ❓ What it does(want it to be)
 
 - Automatically generates a slug from the group title when a new group is created.
 - Stores the slug as **metadata** (`username`) attached to the group.
