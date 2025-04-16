@@ -1,33 +1,27 @@
 <?php
 /**
  * GroupSlugRouter Component
- * Auteur: Eric Redegeld
- * Slug router voor groepen via metadata, geen database wijzigingen nodig
+ * Author: Eric Redegeld
+ * Friendly URLs for groups via slug metadata (no DB schema changes)
  */
 
 define('__GROUPSLUGROUTER__', ossn_route()->com . 'GroupSlugRouter/');
-
-// ✅ Laad de helper en metadata library
 require_once __GROUPSLUGROUTER__ . 'helpers/slug.php';
-require_once dirname(dirname(dirname(__FILE__))) . '/libraries/ossn.lib.entities.php';
-
-// ✅ juiste absolute pad naar core metadata-library
-require_once dirname(dirname(dirname(__FILE__))) . '/libraries/ossn.lib.entities.php';
 
 /**
- * Initialiseer de component
+ * Init the component
  */
 function com_GroupSlugRouter_init() {
     ossn_register_page('g', 'groupslugrouter_vanity_handler');
     ossn_register_page('slugdebug', 'groupslugrouter_debug_slug');
 
-    // ✅ Gebruik de juiste callback: group, add
+    // Hook after a group is added
     ossn_register_callback('group', 'add', 'groupslugrouter_on_group_added');
 }
 ossn_register_callback('ossn', 'init', 'com_GroupSlugRouter_init');
 
 /**
- * Callback die wordt getriggerd na aanmaken groep
+ * Called after a group is added
  */
 function groupslugrouter_on_group_added($event, $type, $params) {
     if (!isset($params['group_guid'])) {
@@ -41,15 +35,13 @@ function groupslugrouter_on_group_added($event, $type, $params) {
         return;
     }
 
-    error_log("[SLUG] ✳️ Slug genereren voor groep: {$group->guid} - {$group->title}");
     groupslugrouter_generate_slug($group);
 }
 
 /**
- * Vanity URL handler /g/slug → group/<guid>
+ * Handles vanity URLs like /g/my-slug
  */
 function groupslugrouter_vanity_handler($pages) {
-    require_once __GROUPSLUGROUTER__ . 'helpers/slug.php';
     if (empty($pages[0])) {
         ossn_error_page();
         return;
@@ -57,18 +49,17 @@ function groupslugrouter_vanity_handler($pages) {
 
     $slug = $pages[0];
     error_log("[SLUG] 🌐 Opgevraagd: {$slug}");
-    $group = groupslugrouter_get_group_by_slug($slug);
 
+    $group = groupslugrouter_get_group_by_slug($slug);
     if ($group) {
         redirect("group/{$group->guid}");
     } else {
-        error_log("[SLUG] ❌ Geen groep gevonden voor slug '{$slug}'");
         ossn_error_page();
     }
 }
 
 /**
- * Debug pagina om slugs op te zoeken
+ * Admin debug tool to test slugs
  */
 function groupslugrouter_debug_slug($pages) {
     if (!ossn_isAdminLoggedin()) {
