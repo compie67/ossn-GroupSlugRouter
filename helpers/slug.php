@@ -1,45 +1,43 @@
 <?php
 /**
- * GroupSlugRouter - helpers/slug.php
- * Hulpfuncties voor het genereren en ophalen van slugs op basis van groepsnamen.
- * Slugs worden opgeslagen als metadata met de key 'username'.
+ * Helper functies voor de GroupSlugRouter component.
  */
 
 error_log("[SLUG] ✅ helpers/slug.php is geladen");
 
 /**
- * Haal een groep op op basis van de slug (username metadata).
+ * Haalt een groep op basis van de slug die is opgeslagen als metadata.
  *
- * @param string $slug De slug die je zoekt (bijvoorbeeld 'amsterdam-makers')
- * @return OssnGroup|false De bijbehorende groep of false als niet gevonden
+ * @param string $slug De te zoeken slug.
+ * @return OssnGroup|false Het OssnGroup object als het is gevonden, anders false.
  */
 function groupslugrouter_get_group_by_slug($slug) {
     $params = [
         'type' => 'group',
-        'metadata_name' => 'username',
-        'metadata_value' => $slug,
+        'subtype' => 'username',
+        'value' => $slug,
         'limit' => 1,
     ];
     $groups = ossn_get_entities($params);
-
     if ($groups && isset($groups[0])) {
-        error_log("[SLUG] ✅ Groep gevonden voor slug '{$slug}': GUID {$groups[0]->guid}");
+        error_log("[SLUG] ✅ Groep gevonden voor slug '{$slug}': GUID {$groups[0]->guid} (via metadata)");
         return $groups[0];
     }
-
-    error_log("[SLUG] ❌ Geen groep gevonden voor slug '{$slug}'");
+    error_log("[SLUG] ❌ Geen groep gevonden voor slug '{$slug}' (via metadata)");
     return false;
 }
 
 /**
- * Genereer een slug van de groepsnaam, en sla deze op als metadata.
+ * Genereert een unieke slug op basis van de groepstitel en slaat deze op als metadata.
  *
- * @param OssnGroup $group De groep waarvoor een slug gegenereerd moet worden
- * @return string|false De slug string, of false bij fout
+ * @param OssnGroup $group Het OssnGroup object.
+ * @return string|false De gegenereerde slug of false bij een fout.
  */
 function groupslugrouter_generate_slug($group) {
+    error_log("[SLUG] ✳️ Slug genereren voor groep: {$group->guid} - {$group->title}");
+
     if (!isset($group->guid) || !isset($group->title)) {
-        error_log("[SLUG] ❌ Ongeldige groep voor slug generatie");
+        error_log("[SLUG] ❌ Ontbrekende groep info.");
         return false;
     }
 
@@ -47,35 +45,37 @@ function groupslugrouter_generate_slug($group) {
     $slug = preg_replace('/[^a-z0-9]+/', '-', $base);
     $slug = trim($slug, '-');
 
-    error_log("[SLUG] ✳️ Slug genereren voor groep: {$group->guid} - {$group->title}");
-
-    // Fallback als slug leeg is
     if (empty($slug)) {
         $slug = 'groep-' . $group->guid;
-        error_log("[SLUG] ⚠️ Lege slug, fallback naar: {$slug}");
     }
 
     // Check of slug al bestaat
     $existing = groupslugrouter_get_group_by_slug($slug);
-    if ($existing && $existing->guid != $group->guid) {
+    if ($existing && $existing->guid !== $group->guid) {
         $slug .= '-' . $group->guid;
-        error_log("[SLUG] ⚠️ Dubbele slug gevonden, aangepast naar: {$slug}");
     }
 
-    // Slug opslaan als metadata (gebruik standaard OSSN functie)
-    $metadata_params = [
-        'entity_guid' => $group->guid,
-        'name' => 'username',
-        'value' => $slug,
-    ];
+    $entity = new OssnEntities;
+    $entity->owner_guid = $group->guid;
+    $entity->type = 'group';
+    $entity->subtype = 'username';
+    $entity->value = $slug;
+    $entity->time_created = time();
 
-    error_log("[SLUG] 💾 Slug opslaan als metadata: " . json_encode($metadata_params));
+    error_log("[SLUG] 📎 Slug opslaan als metadata: " . json_encode([
+        'owner_guid' => $entity->owner_guid,
+        'type' => $entity->type,
+        'subtype' => $entity->subtype,
+        'value' => $entity->value
+    ]));
 
-    if (ossn_add_metadata($metadata_params)) {
-        error_log("[SLUG] ✅ Slug succesvol opgeslagen voor groep {$group->guid}");
+    $result = $entity->add();
+
+    if ($result) {
+        error_log("[SLUG] ✅ Slug opgeslagen: {$slug} voor groep {$group->guid}");
         return $slug;
     } else {
-        error_log("[SLUG] ❌ Opslaan van slug metadata mislukt");
+        error_log("[SLUG] ❌ Slug kon niet opgeslagen worden. SQL fout of ontbrekende data?");
         return false;
     }
 }
