@@ -2,7 +2,8 @@
 # OSSN GroupSlugRouter  A custom Open Source Social Network (OSSN) component that adds "vanity URLs" (slugs) to public groups.
 
 
-
+16-4-2025 update
+OSSN 7+ compatibele dropping ossn_add_metadata()
 ---
 
 ## ❓ What it does(want it to be)
