@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component xmlns="http://www.opensource-socialnetwork.org/v/3.0">
+    <name>GroupSlugRouter</name>
+    <id>GroupSlugRouter</id>
+    <description>Vanity URLs voor groepen via slug-entity</description>
+    <author>Eric Redegeld</author>
+    <author_url>https://nlsociaal.nl/</author_url>
+    <license>GNU General Public License v2</license>
+    <license_url>https://www.gnu.org/licenses/old-licenses/gpl-2.0.html</license_url>
+    <version>2.0</version>
+    <requires>
+        <type>ossn_version</type>
+        <name>Open Source Social Network</name>
+        <version>6.0</version>
+    </requires>
+</component>
