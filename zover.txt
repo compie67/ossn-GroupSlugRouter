@@ -1,6 +1,6 @@
 ✅ Wat hebben we gedaan tot nu toe?
 🔧 Doel van de module
-Je wilde groepen op OSSN benaderbaar maken via een mooie URL zoals:
+groepen op OSSN benaderbaar maken via een mooie URL zoals:
 /g/slugnaam
 in plaats van:
 /group/1234.
@@ -33,6 +33,12 @@ ossn_add_entity()	❌ Verkeerde of incomplete params
 PDO via OssnDatabase (optie B)	✅ Slug wordt correct opgeslagen
 4. Debug Tool
 slugdebug route toont via een adminpagina of een slug bestaat en naar welke groep die leidt.
+
+toegevoegd
+
+ALTER TABLE `ossn_entities` 
+ADD `value` longtext NOT NULL AFTER `subtype`;
+
 
 ⚠️ Huidige status van het probleem
 Slug wordt correct opgeslagen in ossn_entities.
