@@ -1,15 +1,17 @@
 <?php
 /**
- * Helper functies voor de GroupSlugRouter component.
+ * GroupSlugRouter - Helper functions
+ * Author: Eric Redegeld
+ * Description: Generate and lookup group slugs using OSSN entities
  */
 
 error_log("[SLUG] ✅ helpers/slug.php is geladen");
 
 /**
- * Haalt een groep op basis van de slug die is opgeslagen als metadata.
+ * Get group by slug (stored as entity)
  *
- * @param string $slug De te zoeken slug.
- * @return OssnGroup|false Het OssnGroup object als het is gevonden, anders false.
+ * @param string $slug
+ * @return OssnGroup|false
  */
 function groupslugrouter_get_group_by_slug($slug) {
     $params = [
@@ -19,19 +21,21 @@ function groupslugrouter_get_group_by_slug($slug) {
         'limit' => 1,
     ];
     $groups = ossn_get_entities($params);
+
     if ($groups && isset($groups[0])) {
         error_log("[SLUG] ✅ Groep gevonden voor slug '{$slug}': GUID {$groups[0]->guid} (via metadata)");
         return $groups[0];
     }
+
     error_log("[SLUG] ❌ Geen groep gevonden voor slug '{$slug}' (via metadata)");
     return false;
 }
 
 /**
- * Genereert een unieke slug op basis van de groepstitel en slaat deze op als metadata.
+ * Generate slug from group title and store as metadata
  *
- * @param OssnGroup $group Het OssnGroup object.
- * @return string|false De gegenereerde slug of false bij een fout.
+ * @param OssnGroup $group
+ * @return string|false
  */
 function groupslugrouter_generate_slug($group) {
     error_log("[SLUG] ✳️ Slug genereren voor groep: {$group->guid} - {$group->title}");
@@ -49,33 +53,29 @@ function groupslugrouter_generate_slug($group) {
         $slug = 'groep-' . $group->guid;
     }
 
-    // Check of slug al bestaat
+    // Ensure unique slug
     $existing = groupslugrouter_get_group_by_slug($slug);
     if ($existing && $existing->guid !== $group->guid) {
         $slug .= '-' . $group->guid;
     }
 
-    $entity = new OssnEntities;
-    $entity->owner_guid = $group->guid;
-    $entity->type = 'group';
-    $entity->subtype = 'username';
-    $entity->value = $slug;
-    $entity->time_created = time();
+    // 🔍 DEBUG parameters logging
+    $entityParams = [
+        'owner_guid' => $group->guid,
+        'type'       => 'group',
+        'subtype'    => 'username',
+        'value'      => $slug,
+    ];
+    error_log("[SLUG] 📎 Slug opslaan via ossn_add_entity: " . var_export($entityParams, true));
 
-    error_log("[SLUG] 📎 Slug opslaan als metadata: " . json_encode([
-        'owner_guid' => $entity->owner_guid,
-        'type' => $entity->type,
-        'subtype' => $entity->subtype,
-        'value' => $entity->value
-    ]));
-
-    $result = $entity->add();
+    // ⛑️ Add entity
+    $result = ossn_add_entity($entityParams);
 
     if ($result) {
         error_log("[SLUG] ✅ Slug opgeslagen: {$slug} voor groep {$group->guid}");
         return $slug;
     } else {
-        error_log("[SLUG] ❌ Slug kon niet opgeslagen worden. SQL fout of ontbrekende data?");
+        error_log("[SLUG] ❌ Slug kon niet opgeslagen worden. Mogelijk SQL-fout of ontbrekende rechten.");
         return false;
     }
 }
