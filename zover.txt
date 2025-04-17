@@ -1,0 +1,71 @@
+✅ Wat hebben we gedaan tot nu toe?
+🔧 Doel van de module
+Je wilde groepen op OSSN benaderbaar maken via een mooie URL zoals:
+/g/slugnaam
+in plaats van:
+/group/1234.
+
+📦 Belangrijkste functionaliteiten ontwikkeld
+1. Slug genereren bij het aanmaken van een groep
+Op basis van de titel van de groep wordt een unieke slug gegenereerd.
+
+Slug wordt opgeslagen in de ossn_entities tabel als:
+
+type = 'group'
+
+subtype = 'username'
+
+value = 'slugnaam'
+
+2. Friendly URL router
+Pagina /g/slugnaam wordt afgehandeld door de module.
+
+Slug lookup zoekt bijbehorende owner_guid en redirect naar group/ID.
+
+3. Opslagopties getest
+We hebben verschillende methodes geprobeerd:
+
+
+Methode	Resultaat
+ossn_add_metadata() / addEntity()	❌ Niet ondersteund in OSSN 8.1
+OssnEntities->add()	❌ Method niet gedefinieerd
+ossn_add_entity()	❌ Verkeerde of incomplete params
+PDO via OssnDatabase (optie B)	✅ Slug wordt correct opgeslagen
+4. Debug Tool
+slugdebug route toont via een adminpagina of een slug bestaat en naar welke groep die leidt.
+
+⚠️ Huidige status van het probleem
+Slug wordt correct opgeslagen in ossn_entities.
+
+Maar de slug lookup in groupslugrouter_get_group_by_slug() werkt nog niet goed.
+
+Vermoedelijke oorzaak: query geeft geen resultaat terug ondanks correcte data.
+
+🧠 Wat moeten we nog doen?
+🔧 A. Fixen van groupslugrouter_get_group_by_slug() (huidige query werkt nog niet)
+Bijv. debuggen of CAST(value AS CHAR) goed werkt, of misschien is de value opgeslagen met trailing whitespace.
+
+🔨 B. enable.php maken
+Doel: check of ossn_entities tabel bestaat.
+
+Zo niet, dan:
+
+CREATE TABLE uitvoeren zoals nu in jouw db zit.
+
+(Maar we weten nu dat ossn_entities reeds bestaat.)
+
+Dus de enable.php hoeft alleen checken en eventueel loggen, geen nieuwe tabel maken.
+
+🧪 C. Verdere edge-cases testen
+Slug die al bestaat → fallback toevoegen slug-1234
+
+Unicode tekens → transliteratie?
+
+Meertalige ondersteuning?
+
+📁 Wat is al af en werkt goed?
+✅ Slug-generator
+✅ Slug opslaan via OssnDatabase
+✅ Debug-tool
+✅ Redirect-handler (/g/slug)
+✅ Structuur van de component
