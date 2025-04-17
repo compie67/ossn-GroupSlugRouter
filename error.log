@@ -13,3 +13,17 @@ Stack trace:
 #4 /www/wwwroot/shadow.nlsociaal.nl/libraries/ossn.lib.actions.php(51): include_once('...')
 #5 /www/wwwroot/shadow.nlsociaal.nl/system/handlers/actions.php(13): ossn_action()
 #6 {main}
+****************
+
+[17-Apr-2025 12:26:08 CET] [SLUG] ✅ helpers/slug.php is geladen
+[17-Apr-2025 12:26:08 CET] [SLUG] ✳️ Slug genereren voor groep: 3647 - sluggy22
+[17-Apr-2025 12:26:08 CET] [SLUG] ❌ Geen groep gevonden voor slug 'sluggy22' (via metadata)
+[17-Apr-2025 12:26:08 CET] [SLUG] 📎 Slug opslaan via ossn_add_entity: array (
+  'owner_guid' => 3647,
+  'type' => 'group',
+  'subtype' => 'username',
+  'value' => 'sluggy22',
+)
+[17-Apr-2025 12:26:08 CET] [SLUG] ❌ Slug kon niet opgeslagen worden. Mogelijk SQL-fout of ontbrekende rechten.
+[17-Apr-2025 12:26:08 CET] [SLUG] ✅ helpers/slug.php is geladen
+[17-Apr-2025 12:26:08 CET] [SLUG] ✅ helpers/slug.php is geladen
