@@ -1,57 +1,87 @@
-# ossn-GroupSlugRouter
-# OSSN GroupSlugRouter  A custom Open Source Social Network (OSSN) component that adds "vanity URLs" (slugs) to public groups.
+# GroupSlugRouter Component
 
-
-16-4-2025 update
-OSSN 7+ compatibele dropping ossn_add_metadata()
----
-
-## ❓ What it does(want it to be)
-
-- Automatically generates a slug from the group title when a new group is created.
-- Stores the slug as **metadata** (`username`) attached to the group.
-- Adds a `/g/slug` vanity route that redirects to the original group page.
-- Includes a `/slugdebug?s=your-slug` tool (admin-only) for checking if a slug was registered.
+> Friendly vanity URLs for OSSN groups using slugs stored as entity metadata — no database modifications required.
 
 ---
 
-## 🔧 Why this component?
+## 🧩 What does this module do?
 
-OSSN discourages direct modifications to the core database schema. This component follows best practices by:
+This component allows your Open Source Social Network (OSSN) site to use **vanity URLs** for groups. Instead of visiting a group via:
 
-- Using metadata (via `ossn_add_metadata`) to store the slug.
-- Avoiding core file changes.
-- Registering the slug via the `group:add` callback, officially documented here:
-  https://www.opensource-socialnetwork.org/documentation/view/5566/entity-types
+
 
 ---
 
-## 🐛 Current issue
+## 🚀 Features
 
-At the moment, the component fails to save the metadata due to this error:
-
-
-Even though `ossn_add_metadata()` is documented and expected to exist in OSSN core, it appears to be unavailable or not loaded in some environments.
-
----
-
-## ✅ Files
-
-- `ossn_com.php`: component init, route registration, and callback handling
-- `helpers/slug.php`: handles slug creation, checking, and metadata writing
+- Auto-generates a **URL-friendly slug** from the group title.
+- Works with OSSN's `ossn_add_entity()` API (no table modifications).
+- Slugs are stored as `type = object`, `subtype = groupslugname` entities.
+- Includes debug tool for admin users (`/slugdebug`).
+- Automatically assigns slugs for **existing groups on activation**.
+- Prevents slug collisions (appends group GUID if necessary).
+- Full support from OSSN version **6.0+**.
 
 ---
 
-## 📋 To Do
+## 📦 Installation
 
-- [ ] Resolve missing function `ossn_add_metadata()` or find alternative
-- [ ] Confirm compatibility with OSSN 8.1 (Premium)
-- [ ] Add group slug editing via admin interface (optional)
+1. Drop the folder `GroupSlugRouter` into your `components/` directory.
+2. Ensure the folder structure looks like:
+
+components/ └── GroupSlugRouter/ ├── ossn_com.php ├── enable.php ├── helpers/ │ └── slug.php └── ossn_com.xml
+
+3. Log in as admin and enable the component via the admin panel.
+
+Upon activation, the module will automatically assign slugs to all existing groups that don’t already have one.
 
 ---
 
-## 👨‍💻 Author
+## 🔍 Debug
 
-Eric Redegeld  
-https://nlsociaal.nl – OSSN-based social platform in The Netherlands
+Admins can visit:
+https://yoursite.tld/slugdebug
 
+
+…to manually check if a slug exists and test redirection.
+
+---
+
+## 🛠 How it works
+
+When a new group is created:
+- The title is converted into a lowercase, hyphenated slug.
+- We check if the slug is already in use.
+- If it is, a fallback with `-group-guid` is appended.
+- The slug is saved using OSSN's `ossn_add_entity()` as:
+  - `type = object`
+  - `subtype = groupslugname`
+  - `value = <slug>`
+  - `owner_guid = group_guid`
+
+When accessing `/g/<slug>`, we retrieve the slug entity and redirect to the group using `ossn_get_group_by_guid(owner_guid)`.
+
+### 💡 Why the redirect uses owner_guid
+
+Each slug is stored as a separate entity, and OSSN doesn’t support direct linking between arbitrary objects and groups. So we store the `group_guid` as the **owner_guid** of the slug entity. This allows fast retrieval via:
+
+```php
+return ossn_get_group_by_guid($entity->owner_guid);
+
+This workaround was inspired by community member Michael Zülsdorff, who also suggested redirecting based on the group owner's GUID rather than relying on entity matching alone.
+
+🙌 Credits
+Eric Redegeld (developer)
+
+OSSN community for testing
+
+Special thanks to Michael Zülsdorff for his clear insights and suggestions during development.
+
+📜 License
+GNU General Public License v2
+https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+
+🌐 Live Demo
+Component is used at:
+https://nlsociaal.nl
+OSSN-based platform built by Eric Redegeld.
