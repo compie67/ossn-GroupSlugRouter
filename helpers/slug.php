@@ -5,7 +5,7 @@
  * Description: Generate and lookup group slugs using OSSN entities
  */
 
-error_log("[SLUG] ✅ helpers/slug.php is geladen");
+// error_log("[SLUG] ✅ helpers/slug.php is geladen");
 
 /**
  * Get group by slug (stored as entity)
@@ -15,15 +15,15 @@ error_log("[SLUG] ✅ helpers/slug.php is geladen");
  */
 function groupslugrouter_get_group_by_slug($slug) {
     $params = [
-        'type' => 'group',
-        'subtype' => 'username',
+        'type' => 'object',
+        'subtype' => 'groupslugname',
         'value' => $slug,
         'limit' => 1,
     ];
     $groups = ossn_get_entities($params);
 
     if ($groups && isset($groups[0])) {
-        error_log("[SLUG] ✅ Groep gevonden voor slug '{$slug}': GUID {$groups[0]->guid} (via metadata)");
+        error_log("[SLUG] ✅ Groep gevonden voor slug '{$slug}': GUID {$groups[0]->owner_guid} (via metadata)");
         return $groups[0];
     }
 
@@ -62,8 +62,8 @@ function groupslugrouter_generate_slug($group) {
     // 🔍 DEBUG parameters logging
     $entityParams = [
         'owner_guid' => $group->guid,
-        'type'       => 'group',
-        'subtype'    => 'username',
+        'type'       => 'object',
+        'subtype'    => 'groupslugname',
         'value'      => $slug,
     ];
     error_log("[SLUG] 📎 Slug opslaan via ossn_add_entity: " . var_export($entityParams, true));
