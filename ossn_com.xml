@@ -1,16 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component xmlns="http://www.opensource-socialnetwork.org/v/3.0">
+    <!-- 🇳🇱 Naam van de component zoals zichtbaar in OSSN admin | 🇬🇧 Name of the component as seen in OSSN admin -->
     <name>GroupSlugRouter</name>
+
+    <!-- 🇳🇱 Unieke ID van de component | 🇬🇧 Unique ID of the component -->
     <id>GroupSlugRouter</id>
+
+    <!-- 🇳🇱 Korte beschrijving | 🇬🇧 Short description -->
     <description>Vanity URLs voor groepen via slug-entity</description>
+
+    <!-- 🇳🇱 Auteur | 🇬🇧 Author -->
     <author>Eric Redegeld</author>
     <author_url>https://nlsociaal.nl/</author_url>
+
+    <!-- 🇳🇱 Licentie en verwijzing | 🇬🇧 License and reference -->
     <license>GNU General Public License v2</license>
     <license_url>https://www.gnu.org/licenses/old-licenses/gpl-2.0.html</license_url>
+
+    <!-- 🇳🇱 Versie van de component | 🇬🇧 Component version -->
     <version>2.0</version>
+
+    <!-- 🇳🇱 Minimale vereiste OSSN-versie | 🇬🇧 Minimum required OSSN version -->
     <requires>
         <type>ossn_version</type>
         <name>Open Source Social Network</name>
         <version>6.0</version>
     </requires>
+    <requires>
+		<type>ossn_component</type>
+		<name>OssnGroups</name>
+		<comparator>enabled</comparator>
+	</requires>	
+
+    <!-- 🇳🇱 Bestand dat wordt uitgevoerd bij activeren van de component | 🇬🇧 File to run on component enable -->
+    <enable>
+        <file>enable.php</file>
+    </enable>
 </component>
