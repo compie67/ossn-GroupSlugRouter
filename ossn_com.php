@@ -2,26 +2,29 @@
 /**
  * GroupSlugRouter Component
  * Author: Eric Redegeld
- * Friendly URLs for groups via slug metadata (no DB schema changes)
+ * Friendly vanity URLs for groups using OSSN entity slugs (no DB schema changes)
  */
 
 define('__GROUPSLUGROUTER__', ossn_route()->com . 'GroupSlugRouter/');
 require_once __GROUPSLUGROUTER__ . 'helpers/slug.php';
 
 /**
- * Init the component
+ * Component initialisatie
  */
 function com_GroupSlugRouter_init() {
+    // Vanity URL handler: /g/slug
     ossn_register_page('g', 'groupslugrouter_vanity_handler');
+
+    // Debug tool voor admins
     ossn_register_page('slugdebug', 'groupslugrouter_debug_slug');
 
-    // Hook after a group is added
+    // Callback wanneer een groep is aangemaakt
     ossn_register_callback('group', 'add', 'groupslugrouter_on_group_added');
 }
 ossn_register_callback('ossn', 'init', 'com_GroupSlugRouter_init');
 
 /**
- * Called after a group is added
+ * Callback: na het aanmaken van een groep
  */
 function groupslugrouter_on_group_added($event, $type, $params) {
     if (!isset($params['group_guid'])) {
@@ -39,7 +42,10 @@ function groupslugrouter_on_group_added($event, $type, $params) {
 }
 
 /**
- * Handles vanity URLs like /g/my-slug
+ * Handler voor vanity URL's: /g/slug → /group/guid
+ *
+ * 👉 Let op: deze redirect gebruikt de owner_guid van de slug entity
+ *    Idee en oplossing dankzij communitylid **Michael Zülsdorff**
  */
 function groupslugrouter_vanity_handler($pages) {
     if (empty($pages[0])) {
@@ -52,14 +58,15 @@ function groupslugrouter_vanity_handler($pages) {
 
     $group = groupslugrouter_get_group_by_slug($slug);
     if ($group) {
-        redirect("group/{$group->owner_guid}");
+        redirect("group/{$group->guid}");
     } else {
+        error_log("[SLUG] ❌ Geen redirect, groep niet gevonden voor slug '{$slug}'");
         ossn_error_page();
     }
 }
 
 /**
- * Admin debug tool to test slugs
+ * Debug-tool voor admins
  */
 function groupslugrouter_debug_slug($pages) {
     if (!ossn_isAdminLoggedin()) {
