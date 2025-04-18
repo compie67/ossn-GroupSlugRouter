@@ -5,7 +5,7 @@
  * Description: Generate and lookup group slugs using OSSN entities
  */
 
-// error_log("[SLUG] ✅ helpers/slug.php is geladen");
+error_log("[SLUG] ✅ helpers/slug.php is geladen");
 
 /**
  * Get group by slug (stored as entity)
@@ -15,16 +15,17 @@
  */
 function groupslugrouter_get_group_by_slug($slug) {
     $params = [
-        'type' => 'object',
+        'type'    => 'object',
         'subtype' => 'groupslugname',
-        'value' => $slug,
-        'limit' => 1,
+        'value'   => $slug,
+        'limit'   => 1,
     ];
     $groups = ossn_get_entities($params);
 
     if ($groups && isset($groups[0])) {
-        error_log("[SLUG] ✅ Groep gevonden voor slug '{$slug}': GUID {$groups[0]->owner_guid} (via metadata)");
-        return $groups[0];
+        error_log("[SLUG] ✅ Groep gevonden voor slug '{$slug}': GUID {$groups[0]->guid} (via metadata)");
+        error_log("[SLUG] ✅ Owner GUID (groep): {$groups[0]->owner_guid}");
+        return ossn_get_group_by_guid($groups[0]->owner_guid);
     }
 
     error_log("[SLUG] ❌ Geen groep gevonden voor slug '{$slug}' (via metadata)");
@@ -53,29 +54,28 @@ function groupslugrouter_generate_slug($group) {
         $slug = 'groep-' . $group->guid;
     }
 
-    // Ensure unique slug
+    // Check of slug al bestaat
     $existing = groupslugrouter_get_group_by_slug($slug);
     if ($existing && $existing->guid !== $group->guid) {
         $slug .= '-' . $group->guid;
     }
 
-    // 🔍 DEBUG parameters logging
     $entityParams = [
         'owner_guid' => $group->guid,
         'type'       => 'object',
         'subtype'    => 'groupslugname',
         'value'      => $slug,
     ];
+
     error_log("[SLUG] 📎 Slug opslaan via ossn_add_entity: " . var_export($entityParams, true));
 
-    // ⛑️ Add entity
     $result = ossn_add_entity($entityParams);
 
     if ($result) {
         error_log("[SLUG] ✅ Slug opgeslagen: {$slug} voor groep {$group->guid}");
         return $slug;
     } else {
-        error_log("[SLUG] ❌ Slug kon niet opgeslagen worden. Mogelijk SQL-fout of ontbrekende rechten.");
+        error_log("[SLUG] ❌ Slug kon niet opgeslagen worden.");
         return false;
     }
 }
