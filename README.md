@@ -58,7 +58,8 @@ Special thanks to the OSSN community —
 particularly [**@Michael Zülsdorff**](https://www.opensource-socialnetwork.org/member/view/16608)  
 for his valuable insights, performance suggestions, and OSSN best practices.
 
-His feedback helped us:
+His feedback helped me:
+- believe in yourself, never trust AI(it keeps you going in circles)
 - avoid unnecessary lookups for redirect logic  
 - streamline slug generation  
 - better manage component cleanup behavior
