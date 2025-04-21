@@ -1,74 +1,52 @@
-# GroupSlugRouter Component
+✅ GroupSlugRouter v2.1 – Final Summary
+The GroupSlugRouter module adds vanity URLs and a profile group overview tab to OSSN, while staying fully compatible with core components.
 
-> Friendly vanity URLs for OSSN groups using slugs stored as entity metadata — no database modifications required.
+🔧 Key Features
+📍 Vanity URLs for Groups
+Automatically generates clean, readable URLs (slugs) like:
+https://yourdomain.com/g/your-group-name
 
----
+Redirects /g/slug to /group/guid seamlessly.
 
-## 🧩 What does this module do?
+Uses ossn_add_entity() to store the slug safely without touching the database schema.
 
-This component allows your Open Source Social Network (OSSN) site to use **vanity URLs** for groups. Instead of visiting a group via:
+Ensures unique slugs, even if titles conflict (e.g., group-name, group-name-1, etc.)
 
+👥 User Profile Group Overview
+Adds a new tab /u/username/groups showing all groups a user manages.
 
+Sort options: Newest, Oldest, A–Z, Z–A, Most members.
 
----
+Option to show or hide group cover images.
 
-## 🚀 Features
+Each group shows both its default and vanity URL if available.
 
-- Auto-generates a **URL-friendly slug** from the group title.
-- Works with OSSN's `ossn_add_entity()` API (no table modifications).
-- Slugs are stored as `type = object`, `subtype = groupslugname` entities.
-- Includes debug tool for admin users (`/slugdebug`).
-- Automatically assigns slugs for **existing groups on activation**.
-- Prevents slug collisions (appends group GUID if necessary).
-- Full support from OSSN version **6.0+**.
+🔁 Slug Lifecycle Management
+Slugs are automatically generated when a group is created.
 
----
+On module activation, all existing groups without a slug receive one retroactively.
 
-## 📦 Installation
+If a group title changes, the old slug is cleaned up and a new one generated.
 
-1. Drop the folder `GroupSlugRouter` into your `components/` directory.
-2. Ensure the folder structure looks like:
+On module deactivation, all slug entities (groupslugname) are removed for safety.
 
-components/ └── GroupSlugRouter/ ├── ossn_com.php ├── enable.php ├── helpers/ │ └── slug.php └── ossn_com.xml
+🛠️ Admin Debug Page
+/slugdebug for manual testing of slugs (only visible to admins).
 
-3. Log in as admin and enable the component via the admin panel.
+⚠️ Module Conflict Check
+Automatically detects if the legacy UserGroups component is still active.
 
-Upon activation, the module will automatically assign slugs to all existing groups that don’t already have one.
+Warns the admin and prevents activation to avoid feature overlap.
 
----
+💬 Feedback-Inspired Improvements
+✅ Avoids unnecessary group lookups when resolving slugs — per community feedback:
+“No need to load full group objects for redirects, just fetch the GUID and let OSSN handle it.”
 
-## 🔍 Debug
+✅ Safe entity deletion logic added in disable.php using ossn_delete_entity() — fully cleaned up on uninstall.
 
-Admins can visit:
-https://yoursite.tld/slugdebug
+✅ Visual OSSN admin messages on enable/disable.
 
-
-…to manually check if a slug exists and test redirection.
-
----
-
-## 🛠 How it works
-
-When a new group is created:
-- The title is converted into a lowercase, hyphenated slug.
-- We check if the slug is already in use.
-- If it is, a fallback with `-group-guid` is appended.
-- The slug is saved using OSSN's `ossn_add_entity()` as:
-  - `type = object`
-  - `subtype = groupslugname`
-  - `value = <slug>`
-  - `owner_guid = group_guid`
-
-When accessing `/g/<slug>`, we retrieve the slug entity and redirect to the group using `ossn_get_group_by_guid(owner_guid)`.
-
-### 💡 Why the redirect uses owner_guid
-
-Each slug is stored as a separate entity, and OSSN doesn’t support direct linking between arbitrary objects and groups. So we store the `group_guid` as the **owner_guid** of the slug entity. This allows fast retrieval via:
-
-```php
-return ossn_get_group_by_guid($entity->owner_guid);
-
-This workaround was inspired by community member Michael Zülsdorff, who also suggested redirecting based on the group owner's GUID rather than relying on entity matching alone.
+✅ Translated UI for both Dutch 🇳🇱 and English 🇬🇧.
 
 🙌 Credits
 Eric Redegeld (developer)
@@ -83,5 +61,5 @@ https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
 🌐 Live Demo
 Component is used at:
-https://nlsociaal.nl
+https://shadow.nlsociaal.nl
 OSSN-based platform built by Eric Redegeld.
