@@ -14,6 +14,8 @@ require_once __GROUPSLUGROUTER__ . 'helpers/slug.php';
  * 🇬🇧 Component initialization
  */
 function com_GroupSlugRouter_init() {
+    // 📌 CSS 
+    ossn_extend_view('ossn/site/head', 'css/usergroups.css');
     // 📌 Vanity URL redirect
     ossn_register_page('g', 'groupslugrouter_vanity_handler');
 
