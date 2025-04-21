@@ -1,39 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component xmlns="http://www.opensource-socialnetwork.org/v/3.0">
-    <!-- 🇳🇱 Naam van de component zoals zichtbaar in OSSN admin | 🇬🇧 Name of the component as seen in OSSN admin -->
+
+    <!-- 🇳🇱 Naam van de component in de admin interface | 🇬🇧 Component name as shown in the admin interface -->
     <name>GroupSlugRouter</name>
 
-    <!-- 🇳🇱 Unieke ID van de component | 🇬🇧 Unique ID of the component -->
+    <!-- 🇳🇱 Unieke ID van de component | 🇬🇧 Unique component ID -->
     <id>GroupSlugRouter</id>
 
-    <!-- 🇳🇱 Korte beschrijving | 🇬🇧 Short description -->
-    <description>Vanity URLs voor groepen via slug-entity</description>
+    <!-- 🇳🇱 Beschrijving van de functionaliteiten | 🇬🇧 Feature description -->
+    <description>
+        🇳🇱 Geeft groepen een mooie /g/slug URL en toont profielsubpagina met groepen
+        🇬🇧 Provides clean /g/slug URLs for groups and adds group list subpage to user profiles
+    </description>
 
-    <!-- 🇳🇱 Auteur | 🇬🇧 Author -->
+    <!-- 🇳🇱 Auteurinformatie | 🇬🇧 Author info -->
     <author>Eric Redegeld</author>
     <author_url>https://nlsociaal.nl/</author_url>
 
-    <!-- 🇳🇱 Licentie en verwijzing | 🇬🇧 License and reference -->
+    <!-- 🇳🇱 Licentiegegevens | 🇬🇧 Licensing -->
     <license>GNU General Public License v2</license>
     <license_url>https://www.gnu.org/licenses/old-licenses/gpl-2.0.html</license_url>
 
-    <!-- 🇳🇱 Versie van de component | 🇬🇧 Component version -->
-    <version>2.0</version>
+    <!-- 🇳🇱 Versie van deze component | 🇬🇧 Component version -->
+    <version>2.1</version>
 
-    <!-- 🇳🇱 Minimale vereiste OSSN-versie | 🇬🇧 Minimum required OSSN version -->
+    <!-- 🇳🇱 Vereisten voor OSSN core en componenten | 🇬🇧 Requirements for OSSN core and other components -->
     <requires>
+        <!-- Vereist OSSN 6.0 of hoger -->
         <type>ossn_version</type>
         <name>Open Source Social Network</name>
-        <version>6.0</version>
+        <version>8.0</version>
     </requires>
     <requires>
-		<type>ossn_component</type>
-		<name>OssnGroups</name>
-		<comparator>enabled</comparator>
-	</requires>	
+        <!-- Vereist dat de OssnGroups-component actief is -->
+        <type>ossn_component</type>
+        <name>OssnGroups</name>
+        <comparator>enabled</comparator>
+    </requires>
 
-    <!-- 🇳🇱 Bestand dat wordt uitgevoerd bij activeren van de component | 🇬🇧 File to run on component enable -->
+    <!-- 🇳🇱 Uit te voeren bestand bij activeren | 🇬🇧 File to run on enable -->
     <enable>
         <file>enable.php</file>
     </enable>
+
+    <!-- 🇳🇱 Uit te voeren bestand bij uitschakelen (optioneel) | 🇬🇧 File to run on disable (optional) -->
+    <disable>
+        <file>disable.php</file>
+    </disable>
+
 </component>
