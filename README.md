@@ -54,9 +54,8 @@ It also adds a beautiful **"Groups"** tab to each user profile, showing all the 
 
 ## 🙌 Thanks
 
-Special thanks to the OSSN community —  
-particularly [**@Michael Zülsdorff**](https://www.opensource-socialnetwork.org/member/view/16608)  
-for his valuable insights, performance suggestions, and OSSN best practices.
+Special thanks to the OSSN community —    
+for valuable insights, performance suggestions, and OSSN best practices.
 
 His feedback helped me:
 - believe in yourself, never trust AI(it keeps you going in circles)
