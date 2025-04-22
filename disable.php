@@ -1,14 +1,11 @@
 <?php
 /**
- * disable.php - GroupSlugRouter
- * 🇳🇱 Bij het uitschakelen van de module worden vanity slugs opgeruimd.
- * 🇬🇧 When disabling the module, vanity slugs are cleaned up.
+ * disable.php - Bij het uitschakelen van de module worden slugs verwijderd.
  */
 
+require_once __DIR__ . '/helpers/slug.php';
 error_log('[SLUG] 🧹 Module uitgeschakeld, slugs worden verwijderd...');
 
-// 🇳🇱 Zoek alle slug-entities op basis van subtype
-// 🇬🇧 Find all slug entities based on their subtype
 $slugs = ossn_get_entities([
     'type'       => 'object',
     'subtype'    => 'groupslugname',
@@ -16,12 +13,12 @@ $slugs = ossn_get_entities([
 ]);
 
 if ($slugs && is_array($slugs)) {
-    foreach ($slugs as $slug_entity) {
-        $entity_obj = new OssnEntities;
-        if ($entity_obj->deleteEntity($slug_entity->guid)) {
-            error_log("[SLUG] 🗑️ Slug verwijderd: {$slug_entity->value} (entity: {$slug_entity->guid})");
+    $entity = new OssnEntities;
+    foreach ($slugs as $slug) {
+        if ($entity->deleteEntity($slug->guid)) {
+            error_log("[SLUG] 🗑️ Slug verwijderd: {$slug->value} (entity: {$slug->guid})");
         } else {
-            error_log("[SLUG] ⚠️ Kon slug niet verwijderen: {$slug_entity->guid}");
+            error_log("[SLUG] ⚠️ Kon slug niet verwijderen: {$slug->guid}");
         }
     }
     error_log('[SLUG] ✅ Alle slug-entities verwijderd.');
