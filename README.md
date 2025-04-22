@@ -1,3 +1,17 @@
+feedback user ossn
+
+"All we want is just a simple integer (the owner_guid of the entity)"
+"Rename it like $eric = groupslugrouter_get_group_by_slug($slug); and do your check on $eric."
+"It doesn't matter if it's called $group — it’s not a group object.
+
+did some altering and now testing
+
+$guid = groupslugrouter_get_group_by_slug($slug);
+if ($guid) {
+    return redirect("group/{$guid}");
+}
+
+
 
 # GroupSlugRouter for OSSN
 
